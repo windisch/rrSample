@@ -9,6 +9,12 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0, int length=0,bool showOutput=false){
 
+   //check input
+   if(initial.size()!=moves.nrow()){
+      std::cout << "Wrong dimensions" << std::endl;
+      return 0;
+   }
+
    //TODO: Implement  check on linear independence! Needed for now
 
 
@@ -48,11 +54,10 @@ List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0, int length
       current[k]=initial[k];    
    }
 
-
   for(int i = 0; i < length; ++i){
       
       if(!showOutput){
-      p.increment();
+         p.increment();
       }
       //std::cout << std::flush << i << "/" << length;
 
@@ -87,14 +92,12 @@ int k,j;
           }
           std::cout << std::endl;
 
-
       std::cout << "Move" << std::endl;
       for(int k=0; k<dim; k++){
          std::cout << move[k] << "\t";
           }
          std::cout << std::endl;
       }
-
 
       //check whether the move is applicable
       applicable = true;

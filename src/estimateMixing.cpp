@@ -15,7 +15,8 @@ int estimateMixing(IntegerVector u,IntegerMatrix moves,int diam){
   double nIntPoints=0;
   
   nAdaptedMoves=as<double>(countCrossPoly(moves.ncol(),diam));
-  nIntPoints=1;
+
+  nIntPoints=1; //Improve this by using count and --ehrhart-taylor!
 
   mixing=as<int>(floor(nAdaptedMoves/(4*nIntPoints)))+1;
 
