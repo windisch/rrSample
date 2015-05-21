@@ -14,7 +14,7 @@ install.packages("/path/to/file/rrSample.tar.gz")
 library("rrSample")
 ```
 
-This is work in progress. Installation may file for some commits.
+This is work in progress. Installation may fail for some commits.
 
 ### Usage
 coming soon
