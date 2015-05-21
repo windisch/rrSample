@@ -5,8 +5,8 @@ countCrossPoly <- function(dim, r) {
     .Call('rrSample_countCrossPoly', PACKAGE = 'rrSample', dim, r)
 }
 
-fiberWalk <- function(current, moves, length) {
-    .Call('rrSample_fiberWalk', PACKAGE = 'rrSample', current, moves, length)
+fiberWalk <- function(initial, moves, diam, length = 0L, showOutput = FALSE) {
+    .Call('rrSample_fiberWalk', PACKAGE = 'rrSample', initial, moves, diam, length, showOutput)
 }
 
 sampleCrossPoly <- function(dim, r, showOutput = FALSE) {

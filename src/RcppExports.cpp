@@ -18,15 +18,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // fiberWalk
-List fiberWalk(IntegerVector current, IntegerMatrix moves, int length);
-RcppExport SEXP rrSample_fiberWalk(SEXP currentSEXP, SEXP movesSEXP, SEXP lengthSEXP) {
+List fiberWalk(IntegerVector initial, IntegerMatrix moves, int diam, int length, bool showOutput);
+RcppExport SEXP rrSample_fiberWalk(SEXP initialSEXP, SEXP movesSEXP, SEXP diamSEXP, SEXP lengthSEXP, SEXP showOutputSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< IntegerVector >::type current(currentSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type initial(initialSEXP);
     Rcpp::traits::input_parameter< IntegerMatrix >::type moves(movesSEXP);
+    Rcpp::traits::input_parameter< int >::type diam(diamSEXP);
     Rcpp::traits::input_parameter< int >::type length(lengthSEXP);
-    __result = Rcpp::wrap(fiberWalk(current, moves, length));
+    Rcpp::traits::input_parameter< bool >::type showOutput(showOutputSEXP);
+    __result = Rcpp::wrap(fiberWalk(initial, moves, diam, length, showOutput));
     return __result;
 END_RCPP
 }
