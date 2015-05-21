@@ -1,7 +1,8 @@
 # rrSample
 
-rrSample is 
-* an attempt to get rapidly mixing Markov chains on fiber graphs
+rrSample
+* is an extenstion for R written in C++
+* is an attempt to get rapidly mixing Markov chains on fiber graphs
 * can be used to sample from the lattice points of polytopes
   uniformly
 
