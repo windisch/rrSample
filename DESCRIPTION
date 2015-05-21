@@ -10,7 +10,7 @@ Description: An attempt to get rapidly mixing Markov chains on fibers
 Depends: Rcpp,BH,RcppProgress
 LinkingTo: Rcpp
 Imports:Rcpp
-License: GPL-2
+License: GPL-3
 SystemRequirements: See INSTALL file for details.
 Author: Tobias Windisch [aut, cre],
 NeedsCompilation: yes
