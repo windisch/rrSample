@@ -5,34 +5,83 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List fiberWalk(IntegerVector current, IntegerMatrix moves, int length){
+List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam, int length=0){
 
-  int n = current.size();             // number of cells
+  int dim = initial.size();             // number of cells
   int N = moves.ncol();               // number of moves
   IntegerVector selection(1);
-  IntegerMatrix steps(n, length);         
-  IntegerVector proposal(n);           
+  IntegerVector proposal(dim);           
+  IntegerVector current(dim);           
+  //IntegerMatrix movesStack(dim,N);
   bool applicable;
-  IntegerVector move(n);
+  IntegerVector move(dim);
+  IntegerVector coeff(N);
 
-  Function sample("sample");
+  Function sampleCrossPoly("sampleCrossPoly");
 
+   #pragma omp parallel for
+   for(int i=0;i<dim;i++){
+      current[i]=initial[i];    
+   }
 
- // TODOS
- // Implement an estimater of mixing time (volume of poyltope and
- // volume of crossPoly)
+  if(length==0) {
+   // Implement an estimater of mixing time (volume of poyltope and
+   // cross-poly
+     length=100; 
+  }
 
   for(int i = 0; i < length; ++i){
 
       //select move
-      std::cout << "select move" << std::endl;
-      selection = sample(N, 1);
-      std::cout << selection[0] << std::endl;
+      coeff=sampleCrossPoly(N,diam);
+
+/*
+     #pragma omp parallel for
+     for(int j=0; j< N;j++) {
+        for(int k=0; k<dim;k++) { 
+        movesStack(k,j)=coeff[j]*moves(k,j);
+        }
+     }
+     */
+
+int k,j;
+#pragma omp parallel shared(moves,move,coeff) private(k,j) 
+{
+#pragma omp for  schedule(static)
+   for (k=0; k<dim; k++){
+      move[k]=0.;
+      for (j=0; j<N; j++){
+         move[k]=(move[k])+(moves(k,j)*(coeff[j]));
+      }
+   }
+}
+
+      std::cout << "Coefficient" << std::endl;
+      for(int k=0; k<N; k++){
+         std::cout << coeff[k] << "\t"; 
+          }
+          std::cout << std::endl;
+
+
+      std::cout << "Move" << std::endl;
+      for(int k=0; k<dim; k++){
+         std::cout << move[k] << std::endl;
+          }
+
+
+     /*std::cout << "Stack matrix" << std::endl;
+     for(int k=0; k<dim;k++) { 
+         for(int j=0; j< N;j++) {
+            std::cout << movesStack(k,j) << "\t";
+         }
+         std::cout << std::endl;
+       }
+       */
 
       //compute proposal
       applicable = true;
-      for(int k = 0; k < n; ++k){
-        proposal[k] = current[k] + moves(k, selection[0]-1);
+      for(int k = 0; k < dim; ++k){
+        proposal[k] = current[k] + move[k];
         if(proposal[k]<0){
            applicable=false;
            break;
@@ -42,16 +91,10 @@ List fiberWalk(IntegerVector current, IntegerMatrix moves, int length){
       //walk along edge
       if(applicable){
       #pragma omp parallel for
-        for(int k = 0; k < n; ++k){
+        for(int k = 0; k < dim; ++k){
           current[k] = proposal[k];
         }
       }
-
-    // assign state move
-     #pragma omp parallel for
-    for(int k = 0; k < n; ++k){
-      steps(k,i) = current[k];
-    }
   }
 
   // create out list
