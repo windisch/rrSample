@@ -17,6 +17,11 @@ List fiberWalk(IntegerVector current, IntegerMatrix moves, int length){
 
   Function sample("sample");
 
+
+ // TODOS
+ // Implement an estimater of mixing time (volume of poyltope and
+ // volume of crossPoly)
+
   for(int i = 0; i < length; ++i){
 
       //select move

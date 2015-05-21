@@ -7,9 +7,10 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-IntegerVector sampleCrossPoly(int dim,int r){
+IntegerVector sampleCrossPoly(int dim,int r,bool showOutput=false){
 
   int remainder=r;
+  double normConst=0;
   double prob=0;
   DoubleVector probs(2*r+1);
   IntegerVector states(2*r+1);
@@ -17,37 +18,60 @@ IntegerVector sampleCrossPoly(int dim,int r){
   Function sample("sample");
   Function countCrossPoly("countCrossPoly");
 
+  #pragma omp parallel for
   for(int i=-r; i<=r; i++){
       states[i+r]=i;
   }
 
   for(int i=0; i<dim; i++){
+   
+      if(remainder>0){
+         //initialize probability vector
+         #pragma omp parallel for
+         for(int j=0;j<probs.length();j++){
+            probs[j]=0; 
+         }
+      
+         normConst=0; 
+         for(int j=0;j<=remainder;j++){
+            prob=as<double>(countCrossPoly(dim-i-1,remainder-j));     
+            probs[r+j]=prob;
+            probs[r-j]=prob;
+            if(j!=0){
+               normConst=normConst+2*prob; 
+            }
+            else 
+            {
+               normConst=normConst+prob; 
+            }
 
-      //initialize probability vector
-      #pragma omp parallel for
-      for(int j=0;j<probs.length();j++){
-         probs[j]=0; 
-      }
+         }
 
-      #pragma omp parallel for private(prob)
-      for(int j=0;j<=remainder;j++)
+         //compute normalizing constant
+         #pragma omp parallel for
+         for(int j=0;j<probs.length();j++){
+            probs[j]=probs[j]/normConst;
+         }
+
+         if(showOutput){
+            for(int j=0;j<probs.length();j++){
+            std::cout << j << "\t" << probs[j] << std::endl; 
+            }
+            std::cout << "Normalizing Constant" << normConst << std::endl;
+         }
+
+         randomElement[i]=as<int>(sample(states,1,false,probs));
+
+      } 
+      else 
       {
-         prob=as<double>(countCrossPoly(dim-i-1,r-remainder+j));     
-         //write 1/() in probs at the right position!
-         probs[r+i]=prob;
-         probs[r-i]=prob;
-      }
-     
-      for(int j=0;j<probs.length();j++){
-         std::cout << i << "\t" << probs[j] << std::endl; 
+         randomElement[i]=0; 
       }
 
-
-      //use sample function on [-remainder,remainder] and write output
-      
-      //randomElement[i]=sample();
-      //remainder=remainder-randomElement[i];
-      
+      remainder=remainder-abs(randomElement[i]);
+      if(showOutput){
+         std::cout << "Random element" << "\t" << randomElement[i] << std::endl;
+      }
   }
 
   return randomElement;
