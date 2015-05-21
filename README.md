@@ -6,3 +6,14 @@ rrSample is
   uniformly
 
 This is work in progress and any comment is welcome.
+
+### Installation
+
+``` r
+install.packages("/path/to/file/rrSample.tar.gz")
+library("rrSample")
+
+This is work in progress. Installation may file for some commits.
+
+### Usage
+coming soon
