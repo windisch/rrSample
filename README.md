@@ -6,9 +6,3 @@ rrSample is
   uniformly
 
 This is work in progress and any comment is welcome.
-An R extension 
-
-* binomial edge ideals,
-* parity binomial edge ideals,
-
-and their permanental versions over arbitrary fields.
