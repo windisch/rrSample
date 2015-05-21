@@ -9,19 +9,23 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0, int length=0,bool showOutput=false){
 
+   //TODO: Implement  check on linear independence! Needed for now
+
+
   Function estimateDiam("estimateDiam");
   Function estimateMixing("estimateMixing");
+  Function sampleCrossPoly("sampleCrossPoly");
 
   //estimate the diameter
   if(diam==0) {
-      std::cout << "Estimate the diameter";
+      std::cout << "Estimate of diameter:";
       diam=as<int>(estimateDiam(initial,moves));
       std::cout << "\t" << diam << std::endl;
   }
 
   //estimate mixing
   if(length==0) {
-     std::cout << "Estimate mixing time";
+     std::cout << "Estimate of mixing time:";
      length=as<int>(estimateMixing(initial,moves,diam));
      std::cout << "\t" << length << std::endl;
   }
@@ -38,7 +42,6 @@ List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0, int length
   IntegerVector coeff(N);
   Progress p(length,true);
 
-  Function sampleCrossPoly("sampleCrossPoly");
 
    #pragma omp parallel for
    for(int k=0;k<dim;k++){
