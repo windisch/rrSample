@@ -7,7 +7,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0, int length=0,bool showOutput=false){
+List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0, double length=0,bool showOutput=false){
 
    //check input
    if(initial.size()!=moves.nrow()){
@@ -32,7 +32,7 @@ List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0, int length
   //estimate mixing
   if(length==0) {
      std::cout << "Estimate of mixing time:";
-     length=as<int>(estimateMixing(initial,moves,diam));
+     length=as<double>(estimateMixing(initial,moves,diam));
      std::cout << "\t" << length << std::endl;
   }
 
@@ -114,6 +114,9 @@ int k,j;
 
       //walk along edge
       if(applicable){
+          if(showOutput){
+               std::cout << "traverse" << std::endl;
+          }
       #pragma omp parallel for
         for(int k = 0; k < dim; ++k){
           current[k] = proposal[k];
@@ -121,6 +124,9 @@ int k,j;
       } 
       else 
       {
+          if(showOutput){
+               std::cout << "reject" << std::endl;
+          }
           rejectionCounter++;
       }
   }

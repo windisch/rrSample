@@ -13,7 +13,7 @@ estimateMixing <- function(u, moves, diam) {
     .Call('rrSample_estimateMixing', PACKAGE = 'rrSample', u, moves, diam)
 }
 
-fiberWalk <- function(initial, moves, diam = 0L, length = 0L, showOutput = FALSE) {
+fiberWalk <- function(initial, moves, diam = 0L, length = 0, showOutput = FALSE) {
     .Call('rrSample_fiberWalk', PACKAGE = 'rrSample', initial, moves, diam, length, showOutput)
 }
 

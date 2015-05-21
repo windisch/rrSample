@@ -3,22 +3,22 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-int estimateMixing(IntegerVector u,IntegerMatrix moves,int diam){
+double estimateMixing(IntegerVector u,IntegerMatrix moves,int diam){
 //estimateMixing computes an upper bound on the mxing time
 //diam should be an upper bound on diameter
 //TODO: Implement check on linear independence!
 
   Function countCrossPoly("countCrossPoly");
   Function floor("floor");
-  int mixing=0;
-  double nAdaptedMoves=0;
-  double nIntPoints=0;
+  double mixing;
+  double nAdaptedMoves;
+  //double nIntPoints=1;
   
   nAdaptedMoves=as<double>(countCrossPoly(moves.ncol(),diam));
 
-  nIntPoints=1; //Improve this by using count and --ehrhart-taylor!
+  //nIntPoints=1; //Improve this by using count and --ehrhart-taylor!
 
-  mixing=as<int>(floor(nAdaptedMoves/(4*nIntPoints)))+1;
+  mixing=nAdaptedMoves/(4*1);
 
   return mixing;
 }
