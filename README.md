@@ -12,6 +12,7 @@ This is work in progress and any comment is welcome.
 ``` r
 install.packages("/path/to/file/rrSample.tar.gz")
 library("rrSample")
+```
 
 This is work in progress. Installation may file for some commits.
 
