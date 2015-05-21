@@ -2,5 +2,6 @@
 
 export(fiberWalk)
 export(sampleCrossPoly)
+export(countCrossPoly)
 import(Rcpp)
-useDynLib(rrsample)
+useDynLib(rrSample)

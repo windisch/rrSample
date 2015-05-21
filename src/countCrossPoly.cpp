@@ -30,7 +30,5 @@ double countCrossPoly(int dim,int r){
        }
    }
 
-   std::cout << count << std::endl;
-
   return count;
 }

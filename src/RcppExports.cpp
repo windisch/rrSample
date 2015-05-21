@@ -5,18 +5,6 @@
 
 using namespace Rcpp;
 
-// countCrossPoly
-double countCrossPoly(int dim, int r);
-RcppExport SEXP rrSample_countCrossPoly(SEXP dimSEXP, SEXP rSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< int >::type dim(dimSEXP);
-    Rcpp::traits::input_parameter< int >::type r(rSEXP);
-    __result = Rcpp::wrap(countCrossPoly(dim, r));
-    return __result;
-END_RCPP
-}
 // fiberWalk
 List fiberWalk(IntegerVector current, IntegerMatrix moves, int length);
 RcppExport SEXP rrSample_fiberWalk(SEXP currentSEXP, SEXP movesSEXP, SEXP lengthSEXP) {
@@ -39,6 +27,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type dim(dimSEXP);
     Rcpp::traits::input_parameter< int >::type r(rSEXP);
     __result = Rcpp::wrap(sampleCrossPoly(dim, r));
+    return __result;
+END_RCPP
+}
+// countCrossPoly
+double countCrossPoly(int dim, int r);
+RcppExport SEXP rrSample_countCrossPoly(SEXP dimSEXP, SEXP rSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< int >::type dim(dimSEXP);
+    Rcpp::traits::input_parameter< int >::type r(rSEXP);
+    __result = Rcpp::wrap(countCrossPoly(dim, r));
     return __result;
 END_RCPP
 }
