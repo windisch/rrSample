@@ -3,6 +3,8 @@
 export(fiberWalk)
 export(sampleCrossPoly)
 export(countCrossPoly)
+export(estimateDiam)
+export(estimateMixing)
 import(Rcpp)
 useDynLib(rrSample)
 useDynLib(RcppProgress)

@@ -7,19 +7,28 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam, int length=0,bool showOutput=false){
+List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0, int length=0,bool showOutput=false){
 
+  Function estimateDiam("estimateDiam");
+  Function estimateMixing("estimateMixing");
 
+  //estimate the diameter
+  if(diam==0) {
+      std::cout << "Estimate the diameter";
+      diam=as<int>(estimateDiam(initial,moves));
+      std::cout << "\t" << diam << std::endl;
+  }
 
+  //estimate mixing
   if(length==0) {
-   // Implement an estimater of mixing time (volume of poyltope and
-   // cross-poly
-     length=1000; 
+     std::cout << "Estimate mixing time";
+     length=as<int>(estimateMixing(initial,moves,diam));
+     std::cout << "\t" << length << std::endl;
   }
 
   int dim = initial.size();             // number of cells
   int N = moves.ncol();               // number of moves
-  int moveCounter=0;
+  int rejectionCounter=0;
   IntegerVector selection(1);
   IntegerVector proposal(dim);           
   IntegerVector current(dim);           
@@ -99,21 +108,22 @@ int k,j;
 
       //walk along edge
       if(applicable){
-          moveCounter++;
       #pragma omp parallel for
         for(int k = 0; k < dim; ++k){
           current[k] = proposal[k];
         }
+      } 
+      else 
+      {
+          rejectionCounter++;
       }
   }
 
   // create out list
   List out = List::create(
     Rcpp::Named("sample") = current,
-    Rcpp::Named("NumMoves") = moveCounter,
-    Rcpp::Named("Stucks") = length-moveCounter
-
-    
+    Rcpp::Named("Rejections") = rejectionCounter,
+    Rcpp::Named("Traversings") = length-rejectionCounter
   );
 
   return out;

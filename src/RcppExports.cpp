@@ -17,6 +17,31 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// estimateDiam
+int estimateDiam(IntegerVector initial, IntegerMatrix moves);
+RcppExport SEXP rrSample_estimateDiam(SEXP initialSEXP, SEXP movesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< IntegerVector >::type initial(initialSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix >::type moves(movesSEXP);
+    __result = Rcpp::wrap(estimateDiam(initial, moves));
+    return __result;
+END_RCPP
+}
+// estimateMixing
+int estimateMixing(IntegerVector u, IntegerMatrix moves, int diam);
+RcppExport SEXP rrSample_estimateMixing(SEXP uSEXP, SEXP movesSEXP, SEXP diamSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< IntegerVector >::type u(uSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix >::type moves(movesSEXP);
+    Rcpp::traits::input_parameter< int >::type diam(diamSEXP);
+    __result = Rcpp::wrap(estimateMixing(u, moves, diam));
+    return __result;
+END_RCPP
+}
 // fiberWalk
 List fiberWalk(IntegerVector initial, IntegerMatrix moves, int diam, int length, bool showOutput);
 RcppExport SEXP rrSample_fiberWalk(SEXP initialSEXP, SEXP movesSEXP, SEXP diamSEXP, SEXP lengthSEXP, SEXP showOutputSEXP) {

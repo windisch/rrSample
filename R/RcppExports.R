@@ -5,7 +5,15 @@ countCrossPoly <- function(dim, r) {
     .Call('rrSample_countCrossPoly', PACKAGE = 'rrSample', dim, r)
 }
 
-fiberWalk <- function(initial, moves, diam, length = 0L, showOutput = FALSE) {
+estimateDiam <- function(initial, moves) {
+    .Call('rrSample_estimateDiam', PACKAGE = 'rrSample', initial, moves)
+}
+
+estimateMixing <- function(u, moves, diam) {
+    .Call('rrSample_estimateMixing', PACKAGE = 'rrSample', u, moves, diam)
+}
+
+fiberWalk <- function(initial, moves, diam = 0L, length = 0L, showOutput = FALSE) {
     .Call('rrSample_fiberWalk', PACKAGE = 'rrSample', initial, moves, diam, length, showOutput)
 }
 
