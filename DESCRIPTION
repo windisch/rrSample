@@ -1,0 +1,16 @@
+Package: rrSample
+Type: Package
+Title: Sampling rapdily and randomly from polytopes in R
+Version: 0.0.1
+Date: 2015-05-19
+Authors@R: c(person("Tobias", "Windisch", role = c("aut","cre"), email =
+    "windisch@ovgu.de"))
+Maintainer: Tobias Windisch <windisch@ovgu.de>
+Description: An attempt to get rapidly mixing Markov chains on fibers
+Depends: mpoly,BH
+LinkingTo: Rcpp
+Imports:Rcpp
+License: GPL-2
+SystemRequirements: See INSTALL file for details.
+Author: Tobias Windisch [aut, cre],
+NeedsCompilation: yes
