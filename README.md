@@ -1,7 +1,7 @@
 # rrSample
 
 rrSample
-* is an extenstion for [R](https://www.r-project.org) written in C/C++
+* is an extenstion for [R](http://www.r-project.org) written in C/C++
 * can be used to sample lattice points of polytopes
   uniformly and rapidly
 
