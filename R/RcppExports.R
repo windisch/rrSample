@@ -9,12 +9,12 @@ estimateDiam <- function(initial, moves) {
     .Call('rrSample_estimateDiam', PACKAGE = 'rrSample', initial, moves)
 }
 
-estimateMixing <- function(u, moves, diam) {
-    .Call('rrSample_estimateMixing', PACKAGE = 'rrSample', u, moves, diam)
+estimateMixing <- function(u, constMat, moves, diam) {
+    .Call('rrSample_estimateMixing', PACKAGE = 'rrSample', u, constMat, moves, diam)
 }
 
-fiberWalk <- function(initial, moves, diam = 0L, length = 0, showOutput = FALSE) {
-    .Call('rrSample_fiberWalk', PACKAGE = 'rrSample', initial, moves, diam, length, showOutput)
+fiberWalk <- function(initial, constMat, moves, diam = 0L, length = 0, showOutput = FALSE) {
+    .Call('rrSample_fiberWalk', PACKAGE = 'rrSample', initial, constMat, moves, diam, length, showOutput)
 }
 
 sampleCrossPoly <- function(dim, r, showOutput = FALSE) {

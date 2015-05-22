@@ -8,7 +8,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List fiberWalk(arma::vec initial, arma::mat moves,unsigned int diam=0,double length=0,bool showOutput=false){
+List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned int diam=0,double length=0,bool showOutput=false){
 
 
    if(arma::rank(moves)!=moves.n_cols){
@@ -44,7 +44,7 @@ List fiberWalk(arma::vec initial, arma::mat moves,unsigned int diam=0,double len
   //estimate mixing
   if(length==0) {
      std::cout << "Estimate of mixing time:";
-     length=as<double>(estimateMixing(initial,moves,diam));
+     length=as<double>(estimateMixing(initial,constMat,moves,diam));
      std::cout << "\t" << length << std::endl;
   }
 

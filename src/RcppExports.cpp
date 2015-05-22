@@ -31,30 +31,32 @@ BEGIN_RCPP
 END_RCPP
 }
 // estimateMixing
-double estimateMixing(arma::vec u, arma::mat moves, int diam);
-RcppExport SEXP rrSample_estimateMixing(SEXP uSEXP, SEXP movesSEXP, SEXP diamSEXP) {
+double estimateMixing(arma::uvec u, arma::mat constMat, arma::mat moves, int diam);
+RcppExport SEXP rrSample_estimateMixing(SEXP uSEXP, SEXP constMatSEXP, SEXP movesSEXP, SEXP diamSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::vec >::type u(uSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type u(uSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type constMat(constMatSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type moves(movesSEXP);
     Rcpp::traits::input_parameter< int >::type diam(diamSEXP);
-    __result = Rcpp::wrap(estimateMixing(u, moves, diam));
+    __result = Rcpp::wrap(estimateMixing(u, constMat, moves, diam));
     return __result;
 END_RCPP
 }
 // fiberWalk
-List fiberWalk(arma::vec initial, arma::mat moves, int diam, double length, bool showOutput);
-RcppExport SEXP rrSample_fiberWalk(SEXP initialSEXP, SEXP movesSEXP, SEXP diamSEXP, SEXP lengthSEXP, SEXP showOutputSEXP) {
+List fiberWalk(arma::uvec initial, arma::mat constMat, arma::mat moves, unsigned int diam, double length, bool showOutput);
+RcppExport SEXP rrSample_fiberWalk(SEXP initialSEXP, SEXP constMatSEXP, SEXP movesSEXP, SEXP diamSEXP, SEXP lengthSEXP, SEXP showOutputSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::vec >::type initial(initialSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type initial(initialSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type constMat(constMatSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type moves(movesSEXP);
-    Rcpp::traits::input_parameter< int >::type diam(diamSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type diam(diamSEXP);
     Rcpp::traits::input_parameter< double >::type length(lengthSEXP);
     Rcpp::traits::input_parameter< bool >::type showOutput(showOutputSEXP);
-    __result = Rcpp::wrap(fiberWalk(initial, moves, diam, length, showOutput));
+    __result = Rcpp::wrap(fiberWalk(initial, constMat, moves, diam, length, showOutput));
     return __result;
 END_RCPP
 }
