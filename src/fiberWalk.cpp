@@ -36,6 +36,8 @@ List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned i
 
   //estimate the diameter
   if(diam==0) {
+      std::cout << "Estimation of diameter is not implemented yet" << std::endl;
+      return 0;
       std::cout << "Estimate of diameter:";
       diam=as<unsigned int>(estimateDiam(initial,moves));
       std::cout << "\t" << diam << std::endl;
@@ -43,6 +45,8 @@ List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned i
 
   //estimate mixing
   if(length==0) {
+     std::cout << "Estimation of mixing time is not implemented yet" << std::endl;
+     return 0;
      std::cout << "Estimate of mixing time:";
      length=as<double>(estimateMixing(initial,constMat,moves,diam));
      std::cout << "\t" << length << std::endl;
@@ -113,6 +117,7 @@ unsigned int k,j;
           #pragma omp critical
           {
            applicable=false;
+           //break the loop here can speed things up
           }
         }
       }
