@@ -1,16 +1,29 @@
-// [[Rcpp::depends(RcppProgress)]]
-#include <progress.hpp>
-#include <Rcpp.h>
+#include <RcppArmadillo.h>
+// [[Rcpp::depends(RcppArmadillo)]]
 #include <omp.h>
 // [[Rcpp::plugins(openmp)]]
+#include <progress.hpp>
+// [[Rcpp::depends(RcppProgress)]]
 
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0,double length=0,bool showOutput=false){
+List fiberWalk(arma::vec initial, arma::mat moves,int diam=0,double length=0,bool showOutput=false){
+
+
+   if(arma::rank(moves)!=moves.n_cols){
+     std::cout << "Linear independent moves needed" << std::endl; 
+     return 0;
+   }
+   else
+   {
+     if(showOutput){
+         std::cout << "Moves are linear independent" << std::endl; 
+     }
+   }
 
    //check input
-   if(initial.size()!=moves.nrow()){
+   if(initial.n_elem!=moves.n_rows){
       std::cout << "Wrong dimensions" << std::endl;
       return 0;
    }
@@ -35,8 +48,8 @@ List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0,double leng
      std::cout << "\t" << length << std::endl;
   }
 
-  int dim = initial.size();           // number of cells
-  int N = moves.ncol();               // number of moves
+  int dim = initial.n_elem;           // number of cells
+  int N = moves.n_cols;               // number of moves
   int rejectionCounter=0;
   IntegerVector selection(1);
   IntegerVector proposal(dim);           
