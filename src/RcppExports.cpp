@@ -31,13 +31,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // estimateMixing
-double estimateMixing(IntegerVector u, IntegerMatrix moves, int diam);
+double estimateMixing(arma::vec u, arma::mat moves, int diam);
 RcppExport SEXP rrSample_estimateMixing(SEXP uSEXP, SEXP movesSEXP, SEXP diamSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< IntegerVector >::type u(uSEXP);
-    Rcpp::traits::input_parameter< IntegerMatrix >::type moves(movesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type u(uSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type moves(movesSEXP);
     Rcpp::traits::input_parameter< int >::type diam(diamSEXP);
     __result = Rcpp::wrap(estimateMixing(u, moves, diam));
     return __result;

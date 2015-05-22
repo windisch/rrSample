@@ -59,6 +59,7 @@ List fiberWalk(arma::vec initial, arma::mat moves,int diam=0,double length=0,boo
   IntegerVector coeff(N);
   
   //this will fail if length flows integer values
+  //try to detect this
   Progress p(length,true);
 
    #pragma omp parallel for
@@ -66,7 +67,8 @@ List fiberWalk(arma::vec initial, arma::mat moves,int diam=0,double length=0,boo
       current[k]=initial[k];    
    }
 
-  //this integer will overflow for large lengths
+  //the index variable will flow for long walks
+  //use gmp here!
   for(double i = 0; i < length; ++i){
       
       if(!showOutput){
