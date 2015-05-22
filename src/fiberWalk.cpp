@@ -8,7 +8,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List fiberWalk(arma::vec initial, arma::mat moves,int diam=0,double length=0,bool showOutput=false){
+List fiberWalk(arma::vec initial, arma::mat moves,unsigned int diam=0,double length=0,bool showOutput=false){
 
 
    if(arma::rank(moves)!=moves.n_cols){
@@ -37,7 +37,7 @@ List fiberWalk(arma::vec initial, arma::mat moves,int diam=0,double length=0,boo
   //estimate the diameter
   if(diam==0) {
       std::cout << "Estimate of diameter:";
-      diam=as<int>(estimateDiam(initial,moves));
+      diam=as<unsigned int>(estimateDiam(initial,moves));
       std::cout << "\t" << diam << std::endl;
   }
 
@@ -48,8 +48,8 @@ List fiberWalk(arma::vec initial, arma::mat moves,int diam=0,double length=0,boo
      std::cout << "\t" << length << std::endl;
   }
 
-  int dim = initial.n_elem;           // number of cells
-  int N = moves.n_cols;               // number of moves
+  unsigned int dim = initial.n_elem;           // number of cells
+  unsigned int N = moves.n_cols;               // number of moves
   int rejectionCounter=0;
   IntegerVector selection(1);
   IntegerVector proposal(dim);           
@@ -57,18 +57,17 @@ List fiberWalk(arma::vec initial, arma::mat moves,int diam=0,double length=0,boo
   bool applicable;
   IntegerVector move(dim);
   IntegerVector coeff(N);
+ 
   
   //this will fail if length flows integer values
-  //try to detect this
   Progress p(length,true);
 
    #pragma omp parallel for
-   for(int k=0;k<dim;k++){
+   for(unsigned int k=0;k<dim;k++){
       current[k]=initial[k];    
    }
 
-  //the index variable will flow for long walks
-  //use gmp here!
+  //this integer will overflow for large lengths
   for(double i = 0; i < length; ++i){
       
       if(!showOutput){
@@ -78,7 +77,7 @@ List fiberWalk(arma::vec initial, arma::mat moves,int diam=0,double length=0,boo
       //select move
       coeff=sampleCrossPoly(N,diam);
 
-int k,j;
+unsigned int k,j;
 //matrix vector multiplication run in parallel
 #pragma omp parallel shared(moves,move,coeff) private(k,j) 
 {
@@ -93,13 +92,13 @@ int k,j;
 
       if(showOutput){
       std::cout << "Coefficient" << std::endl;
-      for(int k=0; k<N; k++){
+      for(unsigned int k=0; k<N; k++){
          std::cout << coeff[k] << "\t"; 
           }
           std::cout << std::endl;
 
       std::cout << "Move" << std::endl;
-      for(int k=0; k<dim; k++){
+      for(unsigned int k=0; k<dim; k++){
          std::cout << move[k] << "\t";
           }
          std::cout << std::endl;
@@ -108,7 +107,7 @@ int k,j;
       //check whether the move is applicable
       applicable = true;
       #pragma omp parallel for shared(applicable)
-      for(int k = 0; k < dim; ++k){
+      for(unsigned int k = 0; k < dim; ++k){
         proposal[k] = current[k] + move[k];
         if(proposal[k]<0){
           #pragma omp critical
@@ -124,7 +123,7 @@ int k,j;
                std::cout << "traverse" << std::endl;
           }
       #pragma omp parallel for
-        for(int k = 0; k < dim; ++k){
+        for(unsigned int k = 0; k < dim; ++k){
           current[k] = proposal[k];
         }
       } 
