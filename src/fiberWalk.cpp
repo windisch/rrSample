@@ -7,7 +7,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0, double length=0,bool showOutput=false){
+List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0,double length=0,bool showOutput=false){
 
    //check input
    if(initial.size()!=moves.nrow()){
@@ -16,7 +16,6 @@ List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0, double len
    }
 
    //TODO: Implement  check on linear independence! Needed for now
-
 
   Function estimateDiam("estimateDiam");
   Function estimateMixing("estimateMixing");
@@ -36,44 +35,36 @@ List fiberWalk(IntegerVector initial, IntegerMatrix moves,int diam=0, double len
      std::cout << "\t" << length << std::endl;
   }
 
-  int dim = initial.size();             // number of cells
+  int dim = initial.size();           // number of cells
   int N = moves.ncol();               // number of moves
   int rejectionCounter=0;
   IntegerVector selection(1);
   IntegerVector proposal(dim);           
   IntegerVector current(dim);           
-  //IntegerMatrix movesStack(dim,N);
   bool applicable;
   IntegerVector move(dim);
   IntegerVector coeff(N);
+  
+  //this will fail if length flows integer values
   Progress p(length,true);
-
 
    #pragma omp parallel for
    for(int k=0;k<dim;k++){
       current[k]=initial[k];    
    }
 
-  for(int i = 0; i < length; ++i){
+  //this integer will overflow for large lengths
+  for(double i = 0; i < length; ++i){
       
       if(!showOutput){
          p.increment();
       }
-      //std::cout << std::flush << i << "/" << length;
 
       //select move
       coeff=sampleCrossPoly(N,diam);
 
-/*
-     #pragma omp parallel for
-     for(int j=0; j< N;j++) {
-        for(int k=0; k<dim;k++) { 
-        movesStack(k,j)=coeff[j]*moves(k,j);
-        }
-     }
-     */
-
 int k,j;
+//matrix vector multiplication run in parallel
 #pragma omp parallel shared(moves,move,coeff) private(k,j) 
 {
 #pragma omp for  schedule(static)
@@ -112,7 +103,7 @@ int k,j;
         }
       }
 
-      //walk along edge
+      //walk along edge or reject
       if(applicable){
           if(showOutput){
                std::cout << "traverse" << std::endl;

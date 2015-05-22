@@ -15,6 +15,7 @@ double countCrossPoly(int dim,int r){
    
    #pragma omp parallel for private(coeff)
    for(int k=0; k<=std::min(r,dim);k++){
+       //TODO HERE: Catch overflows or write own functions within GMP
        coeff=boost::math::binomial_coefficient<double>(double(dim),double(k))*
        boost::math::binomial_coefficient<double>(double(r-k+dim),double(dim)); 
        #pragma omp critical 
