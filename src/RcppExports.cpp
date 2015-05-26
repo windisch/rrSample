@@ -18,6 +18,18 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// countIntPoints
+double countIntPoints(arma::mat constMat, arma::uvec rhs);
+RcppExport SEXP rrSample_countIntPoints(SEXP constMatSEXP, SEXP rhsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat >::type constMat(constMatSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type rhs(rhsSEXP);
+    __result = Rcpp::wrap(countIntPoints(constMat, rhs));
+    return __result;
+END_RCPP
+}
 // estimateDiam
 int estimateDiam(IntegerVector initial, IntegerMatrix moves);
 RcppExport SEXP rrSample_estimateDiam(SEXP initialSEXP, SEXP movesSEXP) {

@@ -45,10 +45,8 @@ List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned i
 
   //estimate mixing
   if(length==0) {
-     std::cout << "Estimation of mixing time is not implemented yet" << std::endl;
-     return 0;
      std::cout << "Estimate of mixing time:";
-     length=as<double>(estimateMixing(initial,constMat,moves,diam));
+     length=as<double>(estimateMixing(initial,constMat,moves,diam,0.25));
      std::cout << "\t" << length << std::endl;
   }
 

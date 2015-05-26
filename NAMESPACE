@@ -3,6 +3,7 @@
 export(fiberWalk)
 export(sampleCrossPoly)
 export(countCrossPoly)
+export(countIntPoints)
 export(estimateDiam)
 export(estimateMixing)
 export(HemmeckeMatrix)

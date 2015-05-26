@@ -4,9 +4,6 @@
 // [[Rcpp::plugins(openmp)]]
 #include <boost/math/special_functions/log1p.hpp>
 // [[Rcpp::depends(BH)]]
-// [[Rcpp::depends(algstat)]]
-#include <string>
-#include <Rdefines.h>
 
 using namespace Rcpp;
 
@@ -21,8 +18,7 @@ double estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,d
   }
 
   Function countCrossPoly("countCrossPoly");
-  Function getOption("getOption");
-  Function count("count");
+  Function countIntPoints("countIntPoints");
   //double mixing;
   double nAdaptedMoves;
   arma::ivec rhs(constMat.n_rows);
@@ -57,17 +53,8 @@ double estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,d
 
    //estimate integer points in (constMat,rhs))
    if(nIntPoints==0){
-      SEXP opt=getOption("lattePath");
-      //Rf_length checks if there is an element at index 0
-      if(!Rf_isNull(opt) && Rf_length(opt) > 0) {
-         //std::string opt=CHAR(STRING_ELT(Ropt,0));
-         std::cout << "Count integer points with algstat not implemented yet" << std::endl;
-         //use algstat.count here!
-      } else {
-         std::cout << "LattE is not loaded" << std::endl;
-         return 0;
-          }
-    }
+       nIntPoints=as<double>(countIntPoints(constMat,rhs));
+   }
 
    //boost::math::log1p(arg) computes log(arg+1)
   return boost::math::log1p(tol/sqrt(nIntPoints)-1)/boost::math::log1p(-(nIntPoints*nIntPoints)/(8*nAdaptedMoves*nAdaptedMoves));

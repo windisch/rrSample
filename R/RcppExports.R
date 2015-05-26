@@ -5,6 +5,10 @@ countCrossPoly <- function(dim, r) {
     .Call('rrSample_countCrossPoly', PACKAGE = 'rrSample', dim, r)
 }
 
+countIntPoints <- function(constMat, rhs) {
+    .Call('rrSample_countIntPoints', PACKAGE = 'rrSample', constMat, rhs)
+}
+
 estimateDiam <- function(initial, moves) {
     .Call('rrSample_estimateDiam', PACKAGE = 'rrSample', initial, moves)
 }
