@@ -9,8 +9,8 @@ estimateDiam <- function(initial, moves) {
     .Call('rrSample_estimateDiam', PACKAGE = 'rrSample', initial, moves)
 }
 
-estimateMixing <- function(u, constMat, moves, diam) {
-    .Call('rrSample_estimateMixing', PACKAGE = 'rrSample', u, constMat, moves, diam)
+estimateMixing <- function(u, constMat, moves, diam, nIntPoints = 0, tol = 0.25) {
+    .Call('rrSample_estimateMixing', PACKAGE = 'rrSample', u, constMat, moves, diam, nIntPoints, tol)
 }
 
 fiberWalk <- function(initial, constMat, moves, diam = 0L, length = 0, showOutput = FALSE) {

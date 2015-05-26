@@ -7,7 +7,7 @@ Authors@R: c(person("Tobias", "Windisch", role = c("aut","cre"), email =
     "windisch@ovgu.de"))
 Maintainer: Tobias Windisch <windisch@ovgu.de>
 Description: An attempt to get rapidly mixing Markov chains on fibers
-Depends: Rcpp,RcppArmadillo,BH,RcppProgress
+Depends: Rcpp,RcppArmadillo,BH,RcppProgress,algstat
 LinkingTo: Rcpp,RcppArmadillo
 Imports:Rcpp
 License: GPL-3

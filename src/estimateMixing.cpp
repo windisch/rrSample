@@ -2,14 +2,18 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <omp.h>
 // [[Rcpp::plugins(openmp)]]
+#include <boost/math/special_functions/log1p.hpp>
+// [[Rcpp::depends(BH)]]
+// [[Rcpp::depends(algstat)]]
+#include <string>
+#include <Rdefines.h>
 
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-double estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,double tol=0.25){
+double estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,double nIntPoints=0,double tol=0.25){
 //estimateMixing computes an upper bound on the mixing time
-//diam should be an upper bound on diameter
-//
+   
    //check input
   if(u.n_elem!=moves.n_rows or u.n_elem!=constMat.n_cols){
      std::cout << "Wrong dimensions" << std::endl;
@@ -17,10 +21,10 @@ double estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,d
   }
 
   Function countCrossPoly("countCrossPoly");
+  Function getOption("getOption");
+  Function count("count");
   //double mixing;
   double nAdaptedMoves;
-  double nIntPoints;
-  int gcd;
   arma::ivec rhs(constMat.n_rows);
 
   
@@ -52,21 +56,19 @@ double estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,d
    }
 
    //estimate integer points in (constMat,rhs))
-
-
-   
-
-   //this is a lower bound on int points in (constMat,gcd*rhs)
-   
    if(nIntPoints==0){
-      nIntPoints=10000; 
+      SEXP opt=getOption("lattePath");
+      //Rf_length checks if there is an element at index 0
+      if(!Rf_isNull(opt) && Rf_length(opt) > 0) {
+         //std::string opt=CHAR(STRING_ELT(Ropt,0));
+         std::cout << "Count integer points with algstat not implemented yet" << std::endl;
+         //use algstat.count here!
+      } else {
+         std::cout << "LattE is not loaded" << std::endl;
+         return 0;
+          }
     }
 
-
-  //
-  //
-
-  //mixing=nAdaptedMoves/(4*1);
-
-  return nAdaptedMoves/4;
+   //boost::math::log1p(arg) computes log(arg+1)
+  return boost::math::log1p(tol/sqrt(nIntPoints)-1)/boost::math::log1p(-(nIntPoints*nIntPoints)/(8*nAdaptedMoves*nAdaptedMoves));
 }

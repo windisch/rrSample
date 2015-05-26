@@ -31,8 +31,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // estimateMixing
-double estimateMixing(arma::uvec u, arma::mat constMat, arma::mat moves, int diam);
-RcppExport SEXP rrSample_estimateMixing(SEXP uSEXP, SEXP constMatSEXP, SEXP movesSEXP, SEXP diamSEXP) {
+double estimateMixing(arma::uvec u, arma::mat constMat, arma::mat moves, int diam, double nIntPoints, double tol);
+RcppExport SEXP rrSample_estimateMixing(SEXP uSEXP, SEXP constMatSEXP, SEXP movesSEXP, SEXP diamSEXP, SEXP nIntPointsSEXP, SEXP tolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -40,7 +40,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type constMat(constMatSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type moves(movesSEXP);
     Rcpp::traits::input_parameter< int >::type diam(diamSEXP);
-    __result = Rcpp::wrap(estimateMixing(u, constMat, moves, diam));
+    Rcpp::traits::input_parameter< double >::type nIntPoints(nIntPointsSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    __result = Rcpp::wrap(estimateMixing(u, constMat, moves, diam, nIntPoints, tol));
     return __result;
 END_RCPP
 }

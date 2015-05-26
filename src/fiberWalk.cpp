@@ -117,7 +117,7 @@ unsigned int k,j;
           #pragma omp critical
           {
            applicable=false;
-           //break the loop here can speed things up
+           //break the loop can speed things up in large dimension
           }
         }
       }
