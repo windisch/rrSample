@@ -20,8 +20,8 @@ Rcpp::String countIntPoints(arma::mat constMat,arma::uvec rhs){
   //Rf_length checks if there is an element at index 0
   if(!Rf_isNull(opt) && Rf_length(opt) > 0) {
      //std::string opt=CHAR(STRING_ELT(Ropt,0));
-     std::cout << "Count integer points with algstat not implemented yet" << std::endl;
-     return 0;
+    // std::cout << "Count integer points with algstat not implemented yet" << std::endl;
+    // return 0;
 
     mpz_set_str(nIntPoints, "342342341234", 10);
     //use here: mpz_set_str(nIntPoints,count(),10));
