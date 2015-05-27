@@ -19,7 +19,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // countIntPoints
-double countIntPoints(arma::mat constMat, arma::uvec rhs);
+Rcpp::String countIntPoints(arma::mat constMat, arma::uvec rhs);
 RcppExport SEXP rrSample_countIntPoints(SEXP constMatSEXP, SEXP rhsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
