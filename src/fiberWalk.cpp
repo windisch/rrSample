@@ -11,6 +11,7 @@ using namespace Rcpp;
 List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned int diam=0,double length=0,bool showOutput=false){
 
 
+   //check moves on linear independence for now
    if(arma::rank(moves)!=moves.n_cols){
      std::cout << "Linear independent moves needed" << std::endl; 
      return 0;
@@ -27,8 +28,6 @@ List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned i
       std::cout << "Wrong dimensions" << std::endl;
       return 0;
    }
-
-   //TODO: Implement  check on linear independence! Needed for now
 
   Function estimateDiam("estimateDiam");
   Function estimateMixing("estimateMixing");
@@ -60,7 +59,6 @@ List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned i
   IntegerVector move(dim);
   IntegerVector coeff(N);
  
-  
   //this will fail if length flows integer values
   Progress p(length,true);
 
@@ -70,6 +68,7 @@ List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned i
    }
 
   //this integer will overflow for large lengths
+  //use size_t  or size_type
   for(double i = 0; i < length; ++i){
       
       if(!showOutput){

@@ -4,15 +4,18 @@
 // [[Rcpp::plugins(openmp)]]
 #include <boost/math/special_functions/log1p.hpp>
 #include <boost/multiprecision/gmp.hpp>
+#include <boost/multiprecision/mpfr.hpp>
 // [[Rcpp::depends(BH)]]
+#include <gmpxx.h>
+#include <string>
 
 using namespace Rcpp;
-
+namespace bmp = boost::multiprecision;
 // [[Rcpp::export]]
-double estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,std::string nIntPoints="",double tol=0.25){
+Rcpp::String estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,std::string nIntPoints="",double tol=0.25){
 //estimateMixing computes an upper bound on the mixing time
-   
-   //check input
+
+  //check input
   if(u.n_elem!=moves.n_rows or u.n_elem!=constMat.n_cols){
      std::cout << "Wrong dimensions" << std::endl;
      return 0;
@@ -54,17 +57,15 @@ double estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,s
 
    //estimate integer points in (constMat,rhs))
    if(nIntPoints.size()==0){
+       //convert rhs to List of strings!
        nIntPoints=as<std::string>(countIntPoints(constMat,rhs));
-
-       boost::multiprecision::mpz_int v(nIntPoints);
-       std::cout << v << std::endl; // prints 1000!
-
-
-       return 0;
    }
 
-   double dIntPoints=50000;
+  bmp::number<bmp::mpfr_float_backend<50,bmp::allocate_dynamic> > sIntPoints(nIntPoints);
+  bmp::number<bmp::mpfr_float_backend<50,bmp::allocate_dynamic> > sAdaptedMoves(nAdaptedMoves);
+  bmp::number<bmp::mpfr_float_backend<50,bmp::allocate_dynamic> > res;
 
-   //boost::math::log1p(arg) computes log(arg+1)
-  return boost::math::log1p(tol/sqrt(dIntPoints)-1)/boost::math::log1p(-(dIntPoints*dIntPoints)/(8*nAdaptedMoves*nAdaptedMoves));
+  //boost::math::log1p(arg) computes log(arg+1)
+  res= boost::math::log1p(tol/sqrt(sIntPoints)-1)/boost::math::log1p(-(sIntPoints*sIntPoints)/(8*sAdaptedMoves*sAdaptedMoves));
+  return res.str();
 }

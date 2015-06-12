@@ -43,7 +43,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // estimateMixing
-double estimateMixing(arma::uvec u, arma::mat constMat, arma::mat moves, int diam, std::string nIntPoints, double tol);
+Rcpp::String estimateMixing(arma::uvec u, arma::mat constMat, arma::mat moves, int diam, std::string nIntPoints, double tol);
 RcppExport SEXP rrSample_estimateMixing(SEXP uSEXP, SEXP constMatSEXP, SEXP movesSEXP, SEXP diamSEXP, SEXP nIntPointsSEXP, SEXP tolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
