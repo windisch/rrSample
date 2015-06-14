@@ -19,13 +19,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // countIntPoints
-Rcpp::String countIntPoints(arma::mat constMat, std::vector<std::string> rhs);
+Rcpp::String countIntPoints(arma::mat constMat, SEXP rhs);
 RcppExport SEXP rrSample_countIntPoints(SEXP constMatSEXP, SEXP rhsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< arma::mat >::type constMat(constMatSEXP);
-    Rcpp::traits::input_parameter< std::vector<std::string> >::type rhs(rhsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type rhs(rhsSEXP);
     __result = Rcpp::wrap(countIntPoints(constMat, rhs));
     return __result;
 END_RCPP
@@ -43,7 +43,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // estimateMixing
-Rcpp::String estimateMixing(arma::uvec u, arma::mat constMat, arma::mat moves, int diam, std::string nIntPoints, double tol);
+Rcpp::CharacterVector estimateMixing(arma::uvec u, arma::mat constMat, arma::mat moves, int diam, std::string nIntPoints, double tol);
 RcppExport SEXP rrSample_estimateMixing(SEXP uSEXP, SEXP constMatSEXP, SEXP movesSEXP, SEXP diamSEXP, SEXP nIntPointsSEXP, SEXP tolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
