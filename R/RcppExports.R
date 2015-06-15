@@ -5,8 +5,24 @@ countCrossPoly <- function(dim, r) {
     .Call('rrSample_countCrossPoly', PACKAGE = 'rrSample', dim, r)
 }
 
-countIntPoints <- function(constMat, rhs) {
-    .Call('rrSample_countIntPoints', PACKAGE = 'rrSample', constMat, rhs)
+#' Count integer points in a polytope
+#'
+#' This method counts the integer points in a polytope defined by the
+#' matrix \eqn{A} and the right-hand side vector \eqn{b}. \code{countIntPoint} 
+#' uses the method \code{countFiber} of the \code{algstat} package (which is
+#' done there by using \code{LattE}). 
+#' 
+#' @param A matrix
+#' @param b CharacterVector or NumericVector
+#' @return the number of integer points in the polytope defined by
+#' constMat and rhs. The number is returned in a character string.
+#' @name countIntPoints
+#' @usage
+#' A<-matrix(c(1,1,1,1,1,0),2,3)
+#' b<-c("14","20")
+#' countIntPoints(A,b)
+countIntPoints <- function(A, b) {
+    .Call('rrSample_countIntPoints', PACKAGE = 'rrSample', A, b)
 }
 
 estimateDiam <- function(initial, moves) {

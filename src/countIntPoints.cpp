@@ -6,11 +6,26 @@
 #include <Rdefines.h>
 
 using namespace Rcpp;
-
 // [[Rcpp::plugins("cpp11")]]
 
+//' Count integer points in a polytope
+//'
+//' This method counts the integer points in a polytope defined by the
+//' matrix \eqn{A} and the right-hand side vector \eqn{b}. \code{countIntPoint} 
+//' uses the method \code{countFiber} of the \code{algstat} package (which is
+//' done there by using \code{LattE}). 
+//' 
+//' @param A matrix
+//' @param b CharacterVector or NumericVector
+//' @return the number of integer points in the polytope defined by
+//' constMat and rhs. The number is returned in a character string.
+//' @name countIntPoints
+//' @usage
+//' A<-matrix(c(1,1,1,1,1,0),2,3)
+//' b<-c("14","20")
+//' countIntPoints(A,b)
 // [[Rcpp::export]]
-Rcpp::String countIntPoints(arma::mat constMat,SEXP rhs){
+Rcpp::String countIntPoints(arma::mat A,SEXP b){
 
   Function getOption("getOption");
   Function countFiber("countFiber");
@@ -18,7 +33,7 @@ Rcpp::String countIntPoints(arma::mat constMat,SEXP rhs){
   SEXP opt=getOption("lattePath");
   //Rf_length checks if there is an element at index 0
   if(!Rf_isNull(opt) && Rf_length(opt) > 0) {
-    SEXP numIntPoints=countFiber(constMat,rhs);
+    SEXP numIntPoints=countFiber(A,b);
     switch( TYPEOF(numIntPoints) ) {
     case INTSXP: {
          return std::to_string(as<int>(numIntPoints));

@@ -19,14 +19,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // countIntPoints
-Rcpp::String countIntPoints(arma::mat constMat, SEXP rhs);
-RcppExport SEXP rrSample_countIntPoints(SEXP constMatSEXP, SEXP rhsSEXP) {
+Rcpp::String countIntPoints(arma::mat A, SEXP b);
+RcppExport SEXP rrSample_countIntPoints(SEXP ASEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::mat >::type constMat(constMatSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type rhs(rhsSEXP);
-    __result = Rcpp::wrap(countIntPoints(constMat, rhs));
+    Rcpp::traits::input_parameter< arma::mat >::type A(ASEXP);
+    Rcpp::traits::input_parameter< SEXP >::type b(bSEXP);
+    __result = Rcpp::wrap(countIntPoints(A, b));
     return __result;
 END_RCPP
 }
