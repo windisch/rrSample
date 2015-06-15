@@ -4,11 +4,12 @@
 // [[Rcpp::plugins(openmp)]]
 #include <progress.hpp>
 // [[Rcpp::depends(RcppProgress)]]
+#include <gmpxx.h>
 
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned int diam=0,double length=0,bool showOutput=false){
+List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned int diam=0,SEXP length=R_NilValue,bool showOutput=false){
 
 
    //check moves on linear independence for now
@@ -42,16 +43,39 @@ List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned i
       std::cout << "\t" << diam << std::endl;
   }
 
+
+  mpz_class steps;
   //estimate mixing
-  if(length==0) {
+  if(length==R_NilValue) {
+     SEXP estimate=estimateMixing(initial,constMat,moves,diam);
+     steps=CHAR(STRING_ELT(estimate,0));
+
      std::cout << "Estimate of mixing time:";
-     length=as<double>(estimateMixing(initial,constMat,moves,diam,0.25));
-     std::cout << "\t" << length << std::endl;
+     std::cout << "\t" << steps.get_str() << std::endl;
+  } else {
+      
+    switch( TYPEOF(length) ) {
+    case REALSXP: {
+        steps=as<double>(length);
+        break;
+    }
+    case INTSXP: {
+         steps=std::to_string(as<int>(length));
+         break;
+    }
+    case STRSXP: {
+         steps=CHAR(STRING_ELT(length,0));
+         break;
+         }
+    default: {
+         std::cout << "Unkown datatype of length" << std::endl; 
+         return 0;
+         }
+    }
   }
 
   unsigned int dim = initial.n_elem;           // number of cells
   unsigned int N = moves.n_cols;               // number of moves
-  int rejectionCounter=0;
   IntegerVector selection(1);
   IntegerVector proposal(dim);           
   IntegerVector current(dim);           
@@ -60,20 +84,23 @@ List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned i
   IntegerVector coeff(N);
  
   //this will fail if length flows integer values
-  Progress p(length,true);
+  //Progress p(length,true);
 
    #pragma omp parallel for
    for(unsigned int k=0;k<dim;k++){
       current[k]=initial[k];    
    }
 
-  //this integer will overflow for large lengths
-  //use size_t  or size_type
-  for(double i = 0; i < length; ++i){
+  mpz_class i("0",10);
+  mpz_class rejectionCounter("0",10);
+  mpz_class transitionCounter("0",10);
+
+  while(i<steps){
+      i=i+1;
       
-      if(!showOutput){
+   /*   if(!showOutput){
          p.increment();
-      }
+      }*/
 
       //select move
       coeff=sampleCrossPoly(N,diam);
@@ -124,6 +151,7 @@ unsigned int k,j;
           if(showOutput){
                std::cout << "traverse" << std::endl;
           }
+          transitionCounter=transitionCounter+1;
       #pragma omp parallel for
         for(unsigned int k = 0; k < dim; ++k){
           current[k] = proposal[k];
@@ -134,15 +162,16 @@ unsigned int k,j;
           if(showOutput){
                std::cout << "reject" << std::endl;
           }
-          rejectionCounter++;
+          rejectionCounter=rejectionCounter+1;
       }
   }
 
   // create out list
   List out = List::create(
     Rcpp::Named("sample") = current,
-    Rcpp::Named("Rejections") = rejectionCounter,
-    Rcpp::Named("Traversings") = length-rejectionCounter
+    Rcpp::Named("Rejections") = rejectionCounter.get_str(),
+    //FIXME: insert steps here
+    Rcpp::Named("Transitions") = transitionCounter.get_str()
   );
 
   return out;

@@ -23,15 +23,17 @@ Rcpp::String estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int 
 
   Function countCrossPoly("countCrossPoly");
   Function countIntPoints("countIntPoints");
-  //double mixing;
+
+  mpz_class rhs[constMat.n_rows];
   double nAdaptedMoves;
-  arma::ivec rhs(constMat.n_rows);
 
   
    if(arma::rank(moves)==moves.n_cols){
      //columns of moves are linear independent
      //in this case, the number of adapted moves coincides with the
      //number of elements in the corresponding cross poyltope
+
+     //FIXME this might overflow, return string instead
      nAdaptedMoves=as<double>(countCrossPoly(moves.n_cols,diam));
    }
    else
@@ -41,24 +43,28 @@ Rcpp::String estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int 
      return 0;
    }
 
-
   //compute right-hand side for computations in affine semigroup
    unsigned int k,j;
    #pragma omp parallel shared(constMat,rhs,u) private(k,j) 
    {
    #pragma omp for  schedule(static)
-      for (k=0; k<rhs.n_elem; k++){
-         rhs[k]=0.;
+      for (k=0; k<constMat.n_rows; k++){
+         rhs[k]=mpz_class("0");
          for (j=0; j<constMat.n_cols; j++){
-            rhs[k]=(rhs[k])+(constMat(k,j)*(u[j]));
+            rhs[k]=rhs[k]+mpz_class(constMat(k,j)*(u[j]));
          }
       }
    }
 
    //estimate integer points in (constMat,rhs))
    if(nIntPoints.size()==0){
-       //convert rhs to List of strings!
-       nIntPoints=as<std::string>(countIntPoints(constMat,rhs));
+       //convert rhs to Rcpp::List
+       CharacterVector lrhs(constMat.n_rows);
+       for (k=0; k<constMat.n_rows; k++){
+           lrhs[k]=(rhs[k]).get_str();
+       }
+
+       nIntPoints=as<std::string>(countIntPoints(constMat,lrhs));
    }
 
   bmp::number<bmp::mpfr_float_backend<50,bmp::allocate_dynamic> > sIntPoints(nIntPoints);
@@ -66,6 +72,6 @@ Rcpp::String estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int 
   bmp::number<bmp::mpfr_float_backend<50,bmp::allocate_dynamic> > res;
 
   //boost::math::log1p(arg) computes log(arg+1)
-  res= boost::math::log1p(tol/sqrt(sIntPoints)-1)/boost::math::log1p(-(sIntPoints*sIntPoints)/(8*sAdaptedMoves*sAdaptedMoves));
+  res= floor(boost::math::log1p(tol/sqrt(sIntPoints)-1)/boost::math::log1p(-(sIntPoints*sIntPoints)/(8*sAdaptedMoves*sAdaptedMoves)));
   return res.str();
 }

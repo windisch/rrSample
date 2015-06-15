@@ -43,7 +43,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // estimateMixing
-Rcpp::CharacterVector estimateMixing(arma::uvec u, arma::mat constMat, arma::mat moves, int diam, std::string nIntPoints, double tol);
+Rcpp::String estimateMixing(arma::uvec u, arma::mat constMat, arma::mat moves, int diam, std::string nIntPoints, double tol);
 RcppExport SEXP rrSample_estimateMixing(SEXP uSEXP, SEXP constMatSEXP, SEXP movesSEXP, SEXP diamSEXP, SEXP nIntPointsSEXP, SEXP tolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
@@ -59,7 +59,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // fiberWalk
-List fiberWalk(arma::uvec initial, arma::mat constMat, arma::mat moves, unsigned int diam, double length, bool showOutput);
+List fiberWalk(arma::uvec initial, arma::mat constMat, arma::mat moves, unsigned int diam, SEXP length, bool showOutput);
 RcppExport SEXP rrSample_fiberWalk(SEXP initialSEXP, SEXP constMatSEXP, SEXP movesSEXP, SEXP diamSEXP, SEXP lengthSEXP, SEXP showOutputSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
@@ -68,7 +68,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type constMat(constMatSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type moves(movesSEXP);
     Rcpp::traits::input_parameter< unsigned int >::type diam(diamSEXP);
-    Rcpp::traits::input_parameter< double >::type length(lengthSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type length(lengthSEXP);
     Rcpp::traits::input_parameter< bool >::type showOutput(showOutputSEXP);
     __result = Rcpp::wrap(fiberWalk(initial, constMat, moves, diam, length, showOutput));
     return __result;
