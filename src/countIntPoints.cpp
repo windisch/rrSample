@@ -8,9 +8,9 @@
 using namespace Rcpp;
 // [[Rcpp::plugins("cpp11")]]
 
-//' Count integer points in a polytope
+//' @title Count integer points in a polytope
 //'
-//' This method counts the integer points in a polytope defined by the
+//' @description This method counts the integer points in a polytope defined by the
 //' matrix \eqn{A} and the right-hand side vector \eqn{b}. \code{countIntPoint} 
 //' uses the method \code{countFiber} of the \code{algstat} package (which is
 //' done there by using \code{LattE}). 
@@ -20,6 +20,9 @@ using namespace Rcpp;
 //' @return the number of integer points in the polytope defined by
 //' constMat and rhs. The number is returned in a character string.
 //' @name countIntPoints
+//' @seealso
+//' \code{\link{countCrossPoly}}
+//' \code{\link{countFiber}}
 //' @usage
 //' A<-matrix(c(1,1,1,1,1,0),2,3)
 //' b<-c("14","20")
