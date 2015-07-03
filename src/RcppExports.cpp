@@ -6,6 +6,19 @@
 
 using namespace Rcpp;
 
+// computeCellBounds
+arma::uvec computeCellBounds(arma::uvec u, arma::mat constMat, std::string type);
+RcppExport SEXP rrSample_computeCellBounds(SEXP uSEXP, SEXP constMatSEXP, SEXP typeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::uvec >::type u(uSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type constMat(constMatSEXP);
+    Rcpp::traits::input_parameter< std::string >::type type(typeSEXP);
+    __result = Rcpp::wrap(computeCellBounds(u, constMat, type));
+    return __result;
+END_RCPP
+}
 // countCrossPoly
 double countCrossPoly(int dim, int r);
 RcppExport SEXP rrSample_countCrossPoly(SEXP dimSEXP, SEXP rSEXP) {
@@ -43,8 +56,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // estimateMixing
-Rcpp::String estimateMixing(arma::uvec u, arma::mat constMat, arma::mat moves, int diam, std::string nIntPoints, double tol);
-RcppExport SEXP rrSample_estimateMixing(SEXP uSEXP, SEXP constMatSEXP, SEXP movesSEXP, SEXP diamSEXP, SEXP nIntPointsSEXP, SEXP tolSEXP) {
+Rcpp::String estimateMixing(arma::uvec u, arma::mat constMat, arma::mat moves, int diam, std::string nAdaptedMoves, std::string nIntPoints, double tol, std::string type);
+RcppExport SEXP rrSample_estimateMixing(SEXP uSEXP, SEXP constMatSEXP, SEXP movesSEXP, SEXP diamSEXP, SEXP nAdaptedMovesSEXP, SEXP nIntPointsSEXP, SEXP tolSEXP, SEXP typeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -52,9 +65,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type constMat(constMatSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type moves(movesSEXP);
     Rcpp::traits::input_parameter< int >::type diam(diamSEXP);
+    Rcpp::traits::input_parameter< std::string >::type nAdaptedMoves(nAdaptedMovesSEXP);
     Rcpp::traits::input_parameter< std::string >::type nIntPoints(nIntPointsSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
-    __result = Rcpp::wrap(estimateMixing(u, constMat, moves, diam, nIntPoints, tol));
+    Rcpp::traits::input_parameter< std::string >::type type(typeSEXP);
+    __result = Rcpp::wrap(estimateMixing(u, constMat, moves, diam, nAdaptedMoves, nIntPoints, tol, type));
     return __result;
 END_RCPP
 }
@@ -71,6 +86,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP >::type length(lengthSEXP);
     Rcpp::traits::input_parameter< bool >::type showOutput(showOutputSEXP);
     __result = Rcpp::wrap(fiberWalk(initial, constMat, moves, diam, length, showOutput));
+    return __result;
+END_RCPP
+}
+// latticeComplement
+arma::mat latticeComplement(arma::mat constMat);
+RcppExport SEXP rrSample_latticeComplement(SEXP constMatSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat >::type constMat(constMatSEXP);
+    __result = Rcpp::wrap(latticeComplement(constMat));
     return __result;
 END_RCPP
 }

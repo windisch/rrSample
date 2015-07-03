@@ -11,19 +11,6 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned int diam=0,SEXP length=R_NilValue,bool showOutput=false){
 
-
-   //check moves on linear independence for now
-   if(arma::rank(moves)!=moves.n_cols){
-     std::cout << "Linear independent moves needed" << std::endl; 
-     return 0;
-   }
-   else
-   {
-     if(showOutput){
-         std::cout << "Moves are linear independent" << std::endl; 
-     }
-   }
-
    //check input
    if(initial.n_elem!=moves.n_rows){
       std::cout << "Wrong dimensions" << std::endl;
@@ -32,7 +19,10 @@ List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned i
 
   Function estimateDiam("estimateDiam");
   Function estimateMixing("estimateMixing");
+  Function latticeComplement("latticeComplement");
+  Function computeCellBounds("computeCellBounds");
   Function sampleCrossPoly("sampleCrossPoly");
+  Function sample("sample");
 
   //estimate the diameter
   if(diam==0) {
@@ -74,15 +64,54 @@ List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned i
     }
   }
 
-  unsigned int dim = initial.n_elem;           // number of cells
-  unsigned int N = moves.n_cols;               // number of moves
-  IntegerVector selection(1);
+  unsigned int dim = initial.n_elem;         
   IntegerVector proposal(dim);           
   IntegerVector current(dim);           
   bool applicable;
   IntegerVector move(dim);
-  IntegerVector coeff(N);
- 
+
+  arma::mat adaptedMoves;
+  arma::vec lower;
+  arma::vec upper;
+  unsigned int rank=0;
+  bool linIndep;
+
+
+
+  //check linear independence
+  if(arma::rank(moves)!=moves.n_cols){
+       linIndep=false;
+   } else {
+      linIndep=true;    
+   }
+
+   if(linIndep==false){
+      //linear dependent moves; sample via lattice complement
+
+      //compute Lattice complement
+      //right now, this returs the PRODUCT M*L and not just L
+      adaptedMoves = as<arma::mat>(latticeComplement(constMat));
+      rank=adaptedMoves.n_cols;
+
+      //compute cell bounds
+      lower=as<arma::vec>(computeCellBounds(initial,constMat,"lower"));
+      upper=as<arma::vec>(computeCellBounds(initial,constMat,"upper"));
+
+   }
+   else
+   {
+       //linear indepentent moves, sample from moves-matrix directly
+       adaptedMoves=moves;
+       rank=adaptedMoves.n_cols;
+   }
+
+
+
+
+  //initialize coefficients of appropriate size
+  arma::vec coeff(rank);
+  IntegerVector crossPolySample(rank);
+
   //this will fail if length flows integer values
   //Progress p(length,true);
 
@@ -95,38 +124,49 @@ List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned i
   mpz_class rejectionCounter("0",10);
   mpz_class transitionCounter("0",10);
 
-  while(i<steps){
-      i=i+1;
-      
-   /*   if(!showOutput){
-         p.increment();
-      }*/
-
-      //select move
-      coeff=sampleCrossPoly(N,diam);
-
 unsigned int k,j;
-//matrix vector multiplication run in parallel
-#pragma omp parallel shared(moves,move,coeff) private(k,j) 
+
+while(i<steps){
+      i=i+1;
+
+//sample coefficients
+   if(linIndep==false) {
+      //sample coefficients within cell bounds
+      for(k=0;k<rank;k++) {
+         coeff[k]=lower[k]+as<unsigned int>(sample(upper[k]-lower[k],1));
+      }
+   }
+   else {
+      //sample coefficients from cross-polytope
+      crossPolySample=sampleCrossPoly(rank,diam);
+
+      for(k=0;k<rank;k++) {
+         coeff[k]=crossPolySample[k];
+      }
+
+   }
+
+//compute move and apply it
+#pragma omp parallel shared(adaptedMoves,move,coeff) private(k,j) 
 {
 #pragma omp for  schedule(static)
    for (k=0; k<dim; k++){
       move[k]=0.;
-      for (j=0; j<N; j++){
-         move[k]=(move[k])+(moves(k,j)*(coeff[j]));
+      for (j=0; j<rank; j++){
+         move[k]=(move[k])+(adaptedMoves(k,j)*(coeff[j]));
       }
    }
 }
 
       if(showOutput){
       std::cout << "Coefficient" << std::endl;
-      for(unsigned int k=0; k<N; k++){
+      for(k=0; k<rank; k++){
          std::cout << coeff[k] << "\t"; 
           }
           std::cout << std::endl;
 
       std::cout << "Move" << std::endl;
-      for(unsigned int k=0; k<dim; k++){
+      for(k=0; k<dim; k++){
          std::cout << move[k] << "\t";
           }
          std::cout << std::endl;

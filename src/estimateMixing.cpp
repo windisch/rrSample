@@ -12,7 +12,7 @@
 using namespace Rcpp;
 namespace bmp = boost::multiprecision;
 // [[Rcpp::export]]
-Rcpp::String estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,std::string nIntPoints="",double tol=0.25){
+Rcpp::String estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,std::string nAdaptedMoves="",std::string nIntPoints="",double tol=0.25,std::string type="TVD"){
 //estimateMixing computes an upper bound on the mixing time
 
   //check input
@@ -22,26 +22,16 @@ Rcpp::String estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int 
   }
 
   Function countCrossPoly("countCrossPoly");
+  if(arma::rank(moves)==moves.n_cols and nAdaptedMoves==""){
+      double dAdap=as<double>(countCrossPoly(moves.n_cols,diam));
+      nAdaptedMoves=std::to_string(dAdap);
+  }
+
+  //TODO: catch empty nAdaptedMoves for linear dependent moves
+
   Function countIntPoints("countIntPoints");
 
   mpz_class rhs[constMat.n_rows];
-  double nAdaptedMoves;
-
-  
-   if(arma::rank(moves)==moves.n_cols){
-     //columns of moves are linear independent
-     //in this case, the number of adapted moves coincides with the
-     //number of elements in the corresponding cross poyltope
-
-     //FIXME this might overflow, return string instead
-     nAdaptedMoves=as<double>(countCrossPoly(moves.n_cols,diam));
-   }
-   else
-   {
-     //columns of moves are linear dependent
-     std::cout << "Linear dependent moves are not implemented yet" << std::endl; 
-     return 0;
-   }
 
   //compute right-hand side for computations in affine semigroup
    unsigned int k,j;
@@ -72,6 +62,22 @@ Rcpp::String estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int 
   bmp::number<bmp::mpfr_float_backend<50,bmp::allocate_dynamic> > res;
 
   //boost::math::log1p(arg) computes log(arg+1)
-  res= floor(boost::math::log1p(tol/sqrt(sIntPoints)-1)/boost::math::log1p(-(sIntPoints*sIntPoints)/(8*sAdaptedMoves*sAdaptedMoves)));
+
+
+  res= floor(boost::math::log1p(tol-1)/boost::math::log1p((sAdaptedMoves-sIntPoints)/sAdaptedMoves-1));
   return res.str();
+
+  if(type=="TVD") {
+  res= floor(boost::math::log1p(tol/sqrt(sIntPoints)-1)/boost::math::log1p(-(sIntPoints*sIntPoints)/(8*sAdaptedMoves*sAdaptedMoves)));
+   }
+   else {
+       
+  res= floor(boost::math::log1p(tol-1)/boost::math::log1p(-(sIntPoints*sIntPoints)/(8*sAdaptedMoves*sAdaptedMoves)));
+       
+       }
+  return res.str();
+
+
+
+
 }

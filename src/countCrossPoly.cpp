@@ -19,8 +19,7 @@ using namespace Rcpp;
 //'
 //' @param dim integer
 //' @param r integer 
-//' @return the number of integer points in the cross polytope defined by
-//' constMat and rhs. The number is returned in a character string.
+//' @return the number of integer points in the cross polytope 
 //' @name countCrossPoly
 //' @references
 //' \url{https://en.wikipedia.org/wiki/Cross-polytope}

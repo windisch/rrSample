@@ -2,7 +2,9 @@
 
 export(fiberWalk)
 export(sampleCrossPoly)
+export(latticeComplement)
 export(countCrossPoly)
+export(computeCellBounds)
 export(countIntPoints)
 export(estimateDiam)
 export(estimateMixing)
