@@ -87,15 +87,19 @@ List fiberWalk(arma::uvec initial,arma::mat constMat, arma::mat moves,unsigned i
 
    if(linIndep==false){
       //linear dependent moves; sample via lattice complement
+      std::cout << "Random walk for linear dependent moves is not implemented yet" << std::endl;
+      return 0;
 
       //compute Lattice complement
-      //right now, this returs the PRODUCT M*L and not just L
+      //right now, this returs the PRODUCT M*L (and not just L) for
+      //some test cases
+      //TODO: pass moves instead of constMat
       adaptedMoves = as<arma::mat>(latticeComplement(constMat));
       rank=adaptedMoves.n_cols;
 
       //compute cell bounds
-      lower=as<arma::vec>(computeCellBounds(initial,constMat,"lower"));
-      upper=as<arma::vec>(computeCellBounds(initial,constMat,"upper"));
+      lower=as<arma::vec>(computeCellBounds(diam,adaptedMoves,"lower"));
+      upper=as<arma::vec>(computeCellBounds(diam,adaptedMoves,"upper"));
 
    }
    else

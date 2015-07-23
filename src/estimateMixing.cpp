@@ -12,7 +12,7 @@
 using namespace Rcpp;
 namespace bmp = boost::multiprecision;
 // [[Rcpp::export]]
-Rcpp::String estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,std::string nAdaptedMoves="",std::string nIntPoints="",double tol=0.25,std::string type="TVD"){
+Rcpp::String estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int diam,std::string nAdaptedMoves="",std::string nIntPoints="",double tol=0.25,std::string type="EUK"){
 //estimateMixing computes an upper bound on the mixing time
 
   //check input
@@ -61,23 +61,13 @@ Rcpp::String estimateMixing(arma::uvec u,arma::mat constMat,arma::mat moves,int 
   bmp::number<bmp::mpfr_float_backend<50,bmp::allocate_dynamic> > sAdaptedMoves(nAdaptedMoves);
   bmp::number<bmp::mpfr_float_backend<50,bmp::allocate_dynamic> > res;
 
-  //boost::math::log1p(arg) computes log(arg+1)
-
-
-  res= floor(boost::math::log1p(tol-1)/boost::math::log1p((sAdaptedMoves-sIntPoints)/sAdaptedMoves-1));
-  return res.str();
-
   if(type=="TVD") {
-  res= floor(boost::math::log1p(tol/sqrt(sIntPoints)-1)/boost::math::log1p(-(sIntPoints*sIntPoints)/(8*sAdaptedMoves*sAdaptedMoves)));
+      std::cout << "Measure Distance in total variance distance" << std::endl;
+      res= floor(boost::math::log1p(tol/sqrt(sIntPoints)-1)/boost::math::log1p((sAdaptedMoves-sIntPoints)/sAdaptedMoves-1));
    }
    else {
-       
-  res= floor(boost::math::log1p(tol-1)/boost::math::log1p(-(sIntPoints*sIntPoints)/(8*sAdaptedMoves*sAdaptedMoves)));
-       
-       }
-  return res.str();
-
-
-
-
+      std::cout << "Measure Distance in euclidean 2-norm" << std::endl;
+      res= floor(boost::math::log1p(tol-1)/boost::math::log1p((sAdaptedMoves-sIntPoints)/sAdaptedMoves-1));
+      }
+   return res.str();
 }

@@ -7,15 +7,15 @@
 using namespace Rcpp;
 
 // computeCellBounds
-arma::uvec computeCellBounds(arma::uvec u, arma::mat constMat, std::string type);
-RcppExport SEXP rrSample_computeCellBounds(SEXP uSEXP, SEXP constMatSEXP, SEXP typeSEXP) {
+arma::vec computeCellBounds(unsigned int diam, arma::mat adaptedMoves, std::string type);
+RcppExport SEXP rrSample_computeCellBounds(SEXP diamSEXP, SEXP adaptedMovesSEXP, SEXP typeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::uvec >::type u(uSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type constMat(constMatSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type diam(diamSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type adaptedMoves(adaptedMovesSEXP);
     Rcpp::traits::input_parameter< std::string >::type type(typeSEXP);
-    __result = Rcpp::wrap(computeCellBounds(u, constMat, type));
+    __result = Rcpp::wrap(computeCellBounds(diam, adaptedMoves, type));
     return __result;
 END_RCPP
 }
@@ -90,13 +90,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // latticeComplement
-arma::mat latticeComplement(arma::mat constMat);
-RcppExport SEXP rrSample_latticeComplement(SEXP constMatSEXP) {
+arma::mat latticeComplement(arma::mat moves);
+RcppExport SEXP rrSample_latticeComplement(SEXP movesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::mat >::type constMat(constMatSEXP);
-    __result = Rcpp::wrap(latticeComplement(constMat));
+    Rcpp::traits::input_parameter< arma::mat >::type moves(movesSEXP);
+    __result = Rcpp::wrap(latticeComplement(moves));
     return __result;
 END_RCPP
 }
